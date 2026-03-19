@@ -1,30 +1,33 @@
 package courseplanner.service;
 
 import courseplanner.model.*;
+import courseplanner.exception.*;
 
 public class RegistrationService {
 
     private static final int MAX_CREDITS = 20;
 
-    public boolean registerCourse(Student student, Course course) {
+    public void registerCourse(Student student, Course course)
+            throws CreditLimitExceededException,
+                   PrerequisiteNotMetException,
+                   CourseCapacityFullException,
+                   TimeTableConflictException {
 
-        // Check credit limit
+        //1. Credit check
         if (student.getTotalCredits() + course.getCredits() > MAX_CREDITS) {
-            System.out.println("Cannot register for " + course.getTitle() + ". Credit limit exceeded.");
-            return false;
-        }
-        // Validate course-specific registration rules (Polymorphism)
-        if (!course.validateRegistration(student)) {
-            System.out.println("Course validation failed");
-            return false;
+            throw new CreditLimitExceededException("Credit limit exceeded!");
         }
 
-        // Register course
+        // 2️. Course-specific validation (polymorphism)
+        if (!course.validateRegistration(student)) {
+            throw new PrerequisiteNotMetException("Prerequisites not satisfied!");
+        }
+
+        // (We’ll add capacity & timetable logic later)
+
+        // 3️. Register course
         student.getRegisteredCourses().add(course);
-        System.out.println("Course registered successfully: " + course.getTitle());
-        return true;
+
+        System.out.println("✅ Registered: " + course.getTitle());
     }
 }
-
-
-
