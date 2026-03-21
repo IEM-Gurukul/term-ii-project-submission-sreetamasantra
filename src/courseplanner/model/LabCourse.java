@@ -4,8 +4,8 @@ public class LabCourse extends Course {
 
     private int labSlots;
 
-    public LabCourse (String courseId, String title, int credits, int capacity, int labSlots) {
-        super (courseId, title, credits, capacity);
+    public LabCourse (String courseId, String title, int credits, int capacity, String schedule, int labSlots) {
+        super (courseId, title, credits, capacity, schedule);
         this.labSlots=labSlots;
    }
 

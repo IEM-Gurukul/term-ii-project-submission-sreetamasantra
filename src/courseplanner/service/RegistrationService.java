@@ -28,7 +28,14 @@ public class RegistrationService {
             throw new CourseCapacityFullException("Course capacity full!");
         }
 
-        // 3️. Register course
+        // 4. Time table conflict check
+        for (Course registered : student.getRegisteredCourses()) {
+            if (registered.getSchedule().equals(course.getSchedule())) {
+                throw new TimeTableConflictException("Time table conflict with " + registered.getTitle());
+            }
+        }
+
+        // 5. Register course
         course.incrementEnrollment();
         student.getRegisteredCourses().add(course);
 

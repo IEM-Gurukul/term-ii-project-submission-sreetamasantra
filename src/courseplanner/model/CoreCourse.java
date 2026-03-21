@@ -1,8 +1,8 @@
 package courseplanner.model;
 
 public class CoreCourse extends Course {
-    public CoreCourse(String courseId, String title, int credits, int capacity) {
-        super(courseId, title, credits, capacity);
+    public CoreCourse(String courseId, String title, int credits, int capacity, String schedule) {
+        super(courseId, title, credits, capacity, schedule);
     }
 
     @Override

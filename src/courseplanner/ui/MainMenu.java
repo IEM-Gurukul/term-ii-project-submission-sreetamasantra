@@ -12,9 +12,9 @@ public class MainMenu {
         Student s = new Student("S1", "Sreetama Santra", "sreetamasantra30@gmail.com");
 
         // Create courses
-        Course c1 = new CoreCourse("C1", "Data Structures", 4, 50);
-        Course c2 = new ElectiveCourse("C2", "Advanced Programming", 3, 40);
-        Course c3 = new LabCourse("C3", "Advanced Programming Lab", 2, 30, 10);
+        Course c1 = new CoreCourse("C1", "Data Structures", 4, 50, "Mon 10:00-12:00");
+        Course c2 = new ElectiveCourse("C2", "Advanced Programming", 3, 40, "Tue 14:00-16:00");
+        Course c3 = new LabCourse("C3", "Advanced Programming Lab", 2, 30, "Wed 10:00-12:00", 10);
 
         // Create service
         RegistrationService service = new RegistrationService();
