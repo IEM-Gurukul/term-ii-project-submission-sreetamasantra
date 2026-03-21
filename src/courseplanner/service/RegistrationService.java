@@ -18,7 +18,7 @@ public class RegistrationService {
             throw new CreditLimitExceededException("Credit limit exceeded!");
         }
 
-        // 2️. Course-specific validation (polymorphism)
+        // 2️. Prerequisite validation (polymorphism)
         if (!course.validateRegistration(student)) {
             throw new PrerequisiteNotMetException("Prerequisites not satisfied!");
         }
@@ -36,9 +36,14 @@ public class RegistrationService {
         }
 
         // 5. Register course
-        course.incrementEnrollment();
         student.getRegisteredCourses().add(course);
 
-        System.out.println("✅ Registered: " + course.getTitle());
+        // 6. Update student credits 
+        student.addCredits(course.getCredits());
+
+        // 7. Update course enrollment
+        course.incrementEnrollment();
+
+        System.out.println("Successfully registered for " + course.getTitle());
     }
 }

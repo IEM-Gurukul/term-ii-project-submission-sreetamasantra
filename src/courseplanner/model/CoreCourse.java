@@ -7,8 +7,12 @@ public class CoreCourse extends Course {
 
     @Override
     public boolean validateRegistration(Student student) {
-        // Core courses have no prerequisites, so any student can register
-        return true; //for now
+        for (String prereq : prerequisites) {
+            if (!student.getCompletedCourses().contains(prereq)) {
+                return false; // prerequisite not met
+            }
+        }
+        return true; // all prerequisites met
     }
     
 }

@@ -1,12 +1,16 @@
 package courseplanner.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Course {
     protected String courseId;
     protected String title;
     protected int credits;
     protected int capacity;
     protected int enrolledStudents;
-    protected String schedule; // For future timetable conflict logic
+    protected String schedule; 
+    protected List<String> prerequisites;
 
     public Course(String courseId, String title, int credits, int capacity, String schedule) {
         this.courseId = courseId;
@@ -15,6 +19,7 @@ public abstract class Course {
         this.capacity = capacity;
         this.enrolledStudents = 0;
         this.schedule = schedule;
+        this.prerequisites = new ArrayList<>();
     }
 
     public String getCourseId() {
@@ -41,6 +46,14 @@ public abstract class Course {
     public String getSchedule() {
         return schedule;
     }
+
+    public void addPrerequisite(String courseId) {
+        prerequisites.add(courseId);
+    }
     
+    public List<String> getPrerequisites() {
+        return prerequisites;
+    }
+
     public abstract boolean validateRegistration(Student student);
 }
