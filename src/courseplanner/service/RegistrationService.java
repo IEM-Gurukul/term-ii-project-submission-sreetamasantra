@@ -23,9 +23,13 @@ public class RegistrationService {
             throw new PrerequisiteNotMetException("Prerequisites not satisfied!");
         }
 
-        // (We’ll add capacity & timetable logic later)
+        // 3. Capacity check
+        if (course.getEnrolledStudents() >= course.getCapacity()) {
+            throw new CourseCapacityFullException("Course capacity full!");
+        }
 
         // 3️. Register course
+        course.incrementEnrollment();
         student.getRegisteredCourses().add(course);
 
         System.out.println("✅ Registered: " + course.getTitle());
