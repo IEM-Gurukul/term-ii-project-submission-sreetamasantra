@@ -2,8 +2,9 @@ package courseplanner.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public class Student extends User {
+public class Student extends User implements Serializable {
 
     private List<Course> registeredCourses;
     private List<String> completedCourses;

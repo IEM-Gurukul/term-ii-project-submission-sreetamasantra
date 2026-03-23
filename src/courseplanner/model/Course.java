@@ -2,8 +2,9 @@ package courseplanner.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public abstract class Course {
+public abstract class Course implements Serializable {
     protected String courseId;
     protected String title;
     protected int credits;
