@@ -12,30 +12,26 @@ public class MainMenu {
 
         Scanner sc = new Scanner(System.in);
 
-        Student student = new Student("S1", "Sreetama Santra", "sreetamasantra30@gmail.com");
-
-        // Predefined courses
-        Course c1 = new CoreCourse("C1", "Discrete Mathematics", 4, 2, "Mon-10AM");
-        Course c2 = new ElectiveCourse("C2", "Artificial Intelligence & Machine learning", 3, 2, "Tue-2PM");
-        Course c3 = new LabCourse("C3", "Advanced Programming (OOPS) Lab", 2, 1, "Wed-12PM", 5);
-
-        // Add prerequisite
-        c1.addPrerequisite("C0");
-
-        // Student completed courses
+        Student student = new Student("S1", "Sreetama Santra", "sreetamasantra@gmail.com");
         student.addCompletedCourse("C0");
 
-        List<Course> courseList = new ArrayList<>();
-        courseList.add(c1);
-        courseList.add(c2);
-        courseList.add(c3);
+        Course c1 = new CoreCourse("C1", "Data Structures", 4, 2, "Mon-10AM");
+        Course c2 = new ElectiveCourse("C2", "AI", 3, 2, "Tue-2PM");
+        Course c3 = new LabCourse("C3", "Java Lab", 2, 1, "Wed-12PM", 5);
+
+        c1.addPrerequisite("C0");
+
+        Map<String, Course> courseMap = new HashMap<>();
+        courseMap.put("C1", c1);
+        courseMap.put("C2", c2);
+        courseMap.put("C3", c3);
 
         RegistrationService service = new RegistrationService();
 
         int choice;
 
         do {
-            System.out.println("\n COURSE REGISTRATION MENU ");
+            System.out.println("\n COURSE MENU ");
             System.out.println("1. View Courses");
             System.out.println("2. Register Course");
             System.out.println("3. View Registered Courses");
@@ -47,9 +43,8 @@ public class MainMenu {
             switch (choice) {
 
                 case 1:
-                    System.out.println("\nAvailable Courses:");
-                    for (Course c : courseList) {
-                        System.out.println(c.getCourseId() + " - " + c.getTitle() + " (" + c.getSchedule() + ")");
+                    for (Course c : courseMap.values()) {
+                        System.out.println(c.getCourseId() + " - " + c.getTitle());
                     }
                     break;
 
@@ -57,13 +52,7 @@ public class MainMenu {
                     System.out.print("Enter Course ID: ");
                     String id = sc.next();
 
-                    Course selected = null;
-                    for (Course c : courseList) {
-                        if (c.getCourseId().equals(id)) {
-                            selected = c;
-                            break;
-                        }
-                    }
+                    Course selected = courseMap.get(id);
 
                     if (selected == null) {
                         System.out.println(" Course not found!");
@@ -78,7 +67,6 @@ public class MainMenu {
                     break;
 
                 case 3:
-                    System.out.println("\nRegistered Courses:");
                     for (Course c : student.getRegisteredCourses()) {
                         System.out.println("- " + c.getTitle());
                     }
