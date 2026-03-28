@@ -2,6 +2,8 @@ package courseplanner.model;
 
 import java.util.*;
 
+import courseplanner.exception.PrerequisiteNotMetException;
+
 public abstract class Course {
 
     protected String courseId;
@@ -48,5 +50,5 @@ public abstract class Course {
         enrolledStudents++;
     }
 
-    public abstract boolean validateRegistration(Student student);
+    public abstract boolean validateRegistration(Student student) throws PrerequisiteNotMetException;
 }

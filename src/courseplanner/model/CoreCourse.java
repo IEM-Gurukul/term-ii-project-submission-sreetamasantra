@@ -8,6 +8,6 @@ public class CoreCourse extends Course {
 
     @Override
     public boolean validateRegistration(Student student) {
-        return true; // you can add prerequisite logic later
+        return true; 
     }
 }
