@@ -1,34 +1,37 @@
 package courseplanner.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.io.Serializable;
+import java.util.*;
 
-public abstract class Course implements Serializable {
+public abstract class Course {
+
     protected String courseId;
     protected String title;
     protected int credits;
     protected int capacity;
     protected int enrolledStudents;
-    protected String schedule; 
-    protected List<String> prerequisites;
+    protected String schedule;
 
     public Course(String courseId, String title, int credits, int capacity, String schedule) {
         this.courseId = courseId;
         this.title = title;
         this.credits = credits;
         this.capacity = capacity;
-        this.enrolledStudents = 0;
         this.schedule = schedule;
-        this.prerequisites = new ArrayList<>();
+        this.enrolledStudents = 0;
     }
 
     public String getCourseId() {
         return courseId;
     }
+
     public String getTitle() {
         return title;
     }
+
+    public String getSchedule() {
+        return schedule;
+    }
+
     public int getCredits() {
         return credits;
     }
@@ -36,24 +39,13 @@ public abstract class Course implements Serializable {
     public int getCapacity() {
         return capacity;
     }
+
     public int getEnrolledStudents() {
         return enrolledStudents;
     }
 
-    public void incrementEnrollment(){
+    public void incrementEnrollment() {
         enrolledStudents++;
-    }
-
-    public String getSchedule() {
-        return schedule;
-    }
-
-    public void addPrerequisite(String courseId) {
-        prerequisites.add(courseId);
-    }
-    
-    public List<String> getPrerequisites() {
-        return prerequisites;
     }
 
     public abstract boolean validateRegistration(Student student);

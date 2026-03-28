@@ -1,6 +1,6 @@
 package courseplanner.model;
 
-import java.util.List;
+import courseplanner.repository.CourseRepository;
 
 public class Admin extends User {
 
@@ -8,9 +8,19 @@ public class Admin extends User {
         super(userId, name, email);
     }
 
-    // Admin can add courses
-    public void addCourse(List<Course> courseList, Course course) {
-        courseList.add(course);
+    public void addCourse(CourseRepository repo, Course course) {
+        repo.addCourse(course);
+        System.out.println("Course added: " + course.getTitle());
+    }
+
+    public void removeCourse(CourseRepository repo, String courseId) {
+        repo.removeCourse(courseId);
+        System.out.println("Course removed: " + courseId);
+    }
+
+    public void viewCourses(CourseRepository repo) {
+        for (Course c : repo.getAllCourses()) {
+            System.out.println(c.getCourseId() + " - " + c.getTitle());
+        }
     }
 }
-
