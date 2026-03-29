@@ -45,7 +45,7 @@ public class MainMenu {
             System.out.print("Enter choice: ");
 
             choice = sc.nextInt();
-            sc.nextLine();
+            sc.nextLine(); // clear buffer
 
             try {
                 switch (choice) {
@@ -62,9 +62,13 @@ public class MainMenu {
 
                         System.out.print("Enter Capacity: ");
                         int cap = sc.nextInt();
-                        sc.nextLine();
+                        sc.nextLine(); // clear buffer
 
-                        Course newCourse = new CoreCourse(cid, title, credits, cap, "TBA");
+                        // 🔥 FIX: TAKE SCHEDULE INPUT
+                        System.out.print("Enter Schedule (e.g. MON-10AM): ");
+                        String schedule = sc.nextLine();
+
+                        Course newCourse = new CoreCourse(cid, title, credits, cap, schedule);
                         admin.addCourse(repo, newCourse);
 
                         System.out.println("Course added successfully!");
@@ -77,7 +81,11 @@ public class MainMenu {
                             System.out.println("No courses available!");
                         } else {
                             for (Course course : repo.getAllCourses()) {
-                                System.out.println(course.getCourseId() + " - " + course.getTitle());
+                                System.out.println(
+                                        course.getCourseId() + " - " +
+                                        course.getTitle() + " (" +
+                                        course.getSchedule() + ")"
+                                );
                             }
                         }
                         break;
