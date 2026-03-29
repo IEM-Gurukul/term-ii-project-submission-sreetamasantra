@@ -13,90 +13,148 @@ public class MainMenu {
 
         Scanner sc = new Scanner(System.in);
 
-        Student student = new Student("S1", "Sreetama Santra", "sreetama@gmail.com");
-        Admin admin = new Admin("A1", "Admin", "admin@gmail.com");
+        StudentRepository studentRepo = new StudentRepository();
+        studentRepo.loadAll();
 
         CourseRepository repo = new CourseRepository();
         RegistrationService service = new RegistrationService();
+        Admin admin = new Admin("A1", "Admin", "admin@gmail.com");
+
+        System.out.print("Enter Student ID: ");
+        String id = sc.nextLine();
+
+        Student student = studentRepo.getStudent(id);
+
+        if (student == null) {
+            System.out.println("New student created!");
+            student = new Student(id, "User", "email@gmail.com");
+            studentRepo.addStudent(student);
+        }
 
         int choice;
 
         do {
             System.out.println("\n===== COURSE REGISTRATION SYSTEM =====");
-            System.out.println("1. Add Course (Admin)");
+            System.out.println("1. Add Course");
             System.out.println("2. View Courses");
-            System.out.println("3. Register Course (Student)");
-            System.out.println("4. Remove Course (Admin)");
-            System.out.println("5. Exit");
+            System.out.println("3. Register Course");
+            System.out.println("4. Drop Course");
+            System.out.println("5. View Academic Plan");
+            System.out.println("6. Remove Course");
+            System.out.println("7. Exit");
             System.out.print("Enter choice: ");
 
             choice = sc.nextInt();
-            sc.nextLine(); // clear buffer
+            sc.nextLine();
 
-            switch (choice) {
+            try {
+                switch (choice) {
 
-                case 1:
-                    System.out.print("Enter Course ID: ");
-                    String id = sc.nextLine();
+                    case 1:
+                        System.out.print("Enter Course ID: ");
+                        String cid = sc.nextLine();
 
-                    System.out.print("Enter Title: ");
-                    String title = sc.nextLine();
+                        System.out.print("Enter Title: ");
+                        String title = sc.nextLine();
 
-                    System.out.print("Enter Credits: ");
-                    int credits = sc.nextInt();
+                        System.out.print("Enter Credits: ");
+                        int credits = sc.nextInt();
 
-                    System.out.print("Enter Capacity: ");
-                    int capacity = sc.nextInt();
+                        System.out.print("Enter Capacity: ");
+                        int cap = sc.nextInt();
+                        sc.nextLine();
 
-                    sc.nextLine();
+                        Course newCourse = new CoreCourse(cid, title, credits, cap, "TBA");
+                        admin.addCourse(repo, newCourse);
 
-                    Course course = new CoreCourse(id, title, credits, capacity, "TBA");
-                    admin.addCourse(repo, course);
+                        System.out.println("Course added successfully!");
+                        break;
 
-                    break;
+                    case 2:
+                        System.out.println("\nAvailable Courses:");
 
-                case 2:
-                    System.out.println("\nAvailable Courses:");
-                    admin.viewCourses(repo);
-                    break;
+                        if (repo.getAllCourses().isEmpty()) {
+                            System.out.println("No courses available!");
+                        } else {
+                            for (Course course : repo.getAllCourses()) {
+                                System.out.println(course.getCourseId() + " - " + course.getTitle());
+                            }
+                        }
+                        break;
 
-                case 3:
-                    System.out.print("Enter Course ID to register: ");
-                    String courseId = sc.nextLine();
+                    case 3:
+                        System.out.print("Enter Course ID: ");
+                        String regId = sc.nextLine();
 
-                    try {
-                        Course c = repo.getCourse(courseId);
+                        Course rc = repo.getCourse(regId);
 
-                        if (c == null) {
+                        if (rc == null) {
                             System.out.println("Course not found!");
                         } else {
-                            service.registerCourse(student, c);
+                            service.registerCourse(student, rc);
                             System.out.println("Registered successfully!");
                         }
+                        break;
 
-                    } catch (Exception e) {
-                        System.out.println("Error: " + e.getMessage());
-                    }
+                    case 4:
+                        System.out.print("Enter Course ID: ");
+                        String dropId = sc.nextLine();
 
-                    break;
+                        Course dc = repo.getCourse(dropId);
 
-                case 4:
-                    System.out.print("Enter Course ID to remove: ");
-                    String removeId = sc.nextLine();
+                        if (dc == null) {
+                            System.out.println("Course not found!");
+                        } else {
+                            service.dropCourse(student, dc);
+                            System.out.println("Dropped successfully!");
+                        }
+                        break;
 
-                    admin.removeCourse(repo, removeId);
-                    break;
+                    case 5:
+                        service.viewAcademicPlan(student);
+                        break;
 
-                case 5:
-                    System.out.println("Exiting...");
-                    break;
+                    case 6:
+                        System.out.print("Enter Course ID: ");
+                        String removeId = sc.nextLine();
 
-                default:
-                    System.out.println("Invalid choice!");
+                        admin.removeCourse(repo, removeId);
+                        System.out.println("Course removed!");
+                        break;
+
+                    case 7:
+                        System.out.println("Exiting...");
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice!");
+                }
+
+            } catch (DuplicateCourseException e) {
+                System.out.println("Error: " + e.getMessage());
+
+            } catch (CreditLimitExceededException e) {
+                System.out.println("Error: " + e.getMessage());
+
+            } catch (PrerequisiteNotMetException e) {
+                System.out.println("Error: " + e.getMessage());
+
+            } catch (CourseCapacityFullException e) {
+                System.out.println("Error: " + e.getMessage());
+
+            } catch (TimeTableConflictException e) {
+                System.out.println("Error: " + e.getMessage());
+
+            } catch (CourseNotRegisteredException e) {
+                System.out.println("Error: " + e.getMessage());
+
+            } catch (Exception e) {
+                System.out.println("Unexpected Error: " + e.getMessage());
             }
 
-        } while (choice != 5);
+        } while (choice != 7);
 
+        studentRepo.saveAll();
         sc.close();
     }
 }

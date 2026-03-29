@@ -11,39 +11,62 @@ public class RegistrationService {
             throws CreditLimitExceededException,
                    PrerequisiteNotMetException,
                    CourseCapacityFullException,
-                   TimeTableConflictException {
+                   TimeTableConflictException,
+                   DuplicateCourseException {
 
-        //1. Credit check
+        // Duplicate check
+        if (student.isAlreadyRegistered(course)) {
+            throw new DuplicateCourseException("Already registered!");
+        }
+
+        // Credit limit check
         if (student.getTotalCredits() + course.getCredits() > MAX_CREDITS) {
             throw new CreditLimitExceededException("Credit limit exceeded!");
         }
 
-        // 2️. Prerequisite validation (polymorphism)
-        if (!course.validateRegistration(student)) {
-            throw new PrerequisiteNotMetException("Prerequisites not satisfied!");
-        }
+        // Prerequisite check
+        course.validateRegistration(student);
 
-        // 3. Capacity check
+        // Capacity check
         if (course.getEnrolledStudents() >= course.getCapacity()) {
-            throw new CourseCapacityFullException("Course capacity full!");
+            throw new CourseCapacityFullException("Course full!");
         }
 
-        // 4. Time table conflict check
+        // Time conflict check
         for (Course registered : student.getRegisteredCourses()) {
             if (registered.getSchedule().equals(course.getSchedule())) {
-                throw new TimeTableConflictException("Time table conflict with " + registered.getTitle());
+                throw new TimeTableConflictException(
+                        "Conflict with " + registered.getTitle());
             }
         }
 
-        // 5. Register course
-        student.getRegisteredCourses().add(course);
-
-        // 6. Update student credits 
-        student.addCredits(course.getCredits());
-
-        // 7. Update course enrollment
+        // Register
+        student.registerCourse(course);
         course.incrementEnrollment();
+    }
 
-        System.out.println("Successfully registered for " + course.getTitle());
+    public void dropCourse(Student student, Course course)
+            throws CourseNotRegisteredException {
+
+        if (!student.getRegisteredCourses().contains(course)) {
+            throw new CourseNotRegisteredException("Not registered!");
+        }
+
+        student.dropCourse(course);
+    }
+
+    public void viewAcademicPlan(Student student) {
+
+        System.out.println("\n--- Academic Plan ---");
+
+        if (student.getRegisteredCourses().isEmpty()) {
+            System.out.println("No courses registered.");
+        } else {
+            for (Course c : student.getRegisteredCourses()) {
+                System.out.println(c.getCourseId() + " - " + c.getTitle());
+            }
+        }
+
+        System.out.println("Total Credits: " + student.getTotalCredits());
     }
 }

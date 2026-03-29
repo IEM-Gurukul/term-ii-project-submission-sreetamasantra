@@ -1,5 +1,7 @@
 package courseplanner.model;
 
+import courseplanner.exception.PrerequisiteNotMetException;
+
 public class ElectiveCourse extends Course {
 
     public ElectiveCourse(String courseId, String title, int credits, int capacity, String schedule) {
@@ -7,7 +9,13 @@ public class ElectiveCourse extends Course {
     }
 
     @Override
-    public boolean validateRegistration(Student student) {
+    public boolean validateRegistration(Student student) throws PrerequisiteNotMetException {
+
+        for (String pre : prerequisites) {
+            if (!student.getCompletedCourses().contains(pre)) {
+                throw new PrerequisiteNotMetException("Missing prerequisite: " + pre);
+            }
+        }
         return true;
     }
 }

@@ -1,5 +1,7 @@
 package courseplanner.model;
 
+import courseplanner.exception.PrerequisiteNotMetException;
+
 public class LabCourse extends Course {
 
     private int labSlots;
@@ -10,7 +12,13 @@ public class LabCourse extends Course {
     }
 
     @Override
-    public boolean validateRegistration(Student student) {
+    public boolean validateRegistration(Student student) throws PrerequisiteNotMetException {
+
+        for (String pre : prerequisites) {
+            if (!student.getCompletedCourses().contains(pre)) {
+                throw new PrerequisiteNotMetException("Missing prerequisite: " + pre);
+            }
+        }
         return true;
     }
 }
