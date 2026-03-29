@@ -3,126 +3,92 @@ classDiagram
     direction TB
 
     class User {
-        - userId : String
-        - name : String
-        - email : String
-        + User(id, name, email)
-        + getUserId() String
-        + getName() String
-        + getEmail() String
+        <<abstract>>
+        -String userId
+        -String name
+        -String email
+        +getUserId() String
+        +getName() String
+        +getEmail() String
     }
 
     class Student {
-        - registeredCourses : List~Course~
-        - totalCredits : int
-        + Student(id, name, email)
-        + addCredits(c int) void
-        + addCourse(c Course) void
-        + getRegisteredCourses() List~Course~
-        + getTotalCredits() int
+        -List~Course~ registeredCourses
+        -Set~String~ completedCourses
+        -int totalCredits
+        +registerCourse(Course) void
+        +dropCourse(Course) void
+        +isAlreadyRegistered(Course) boolean
+        +getTotalCredits() int
     }
 
     class Admin {
-        + Admin(id, name, email)
-        + addCourse(repo CourseRepository, c Course) void
-        + removeCourse(repo CourseRepository, id String) void
-        + viewCourses(repo CourseRepository) void
+        +addCourse(CourseRepository, Course) void
+        +removeCourse(CourseRepository, String) void
     }
 
     class Course {
         <<abstract>>
-        - courseId : String
-        - title : String
-        - credits : int
-        - capacity : int
-        - enrolledStudents : int
-        - schedule : String
-        + getCourseId() String
-        + getTitle() String
-        + getCredits() int
-        + getCapacity() int
-        + getEnrolledStudents() int
-        + getSchedule() String
-        + incrementEnrollment() void
-        + validateRegistration(s Student) bool*
+        -String courseId
+        -String title
+        -int credits
+        -int capacity
+        -int enrolledStudents
+        -String schedule
+        -Set~String~ prerequisites
+        +validateRegistration(Student) boolean*
+        +addPrerequisite(String) void
     }
 
     class CoreCourse {
-        - prerequisites : List~String~
-        + CoreCourse(id, title, credits, cap, sch)
-        + validateRegistration(s Student) bool
-        + getPrerequisites() List~String~
+        +validateRegistration(Student) boolean
     }
 
     class ElectiveCourse {
-        + ElectiveCourse(id, title, credits, cap)
-        + validateRegistration(s Student) bool
+        +validateRegistration(Student) boolean
     }
 
     class LabCourse {
-        - labSlots : int
-        + LabCourse(id, title, credits, cap, slots)
-        + validateRegistration(s Student) bool
-        + getLabSlots() int
-    }
-
-    class CourseRepository {
-        - courses : Map~String, Course~
-        + addCourse(c Course) void
-        + removeCourse(id String) void
-        + getCourse(id String) Course
-        + getAllCourses() Collection~Course~
-    }
-
-    class StudentRepository {
-        - students : Map~String, Student~
-        + saveStudent(s Student) void
-        + loadStudent(id String) Student
-        + deleteStudent(id String) void
+        +validateRegistration(Student) boolean
     }
 
     class RegistrationService {
-        - MAX_CREDITS : int
-        + registerCourse(s Student, c Course) void
-        + dropCourse(s Student, id String) void
-        + getEnrollmentStatus(c Course) String
+        +registerCourse(Student, Course) void
+        +dropCourse(Student, Course) void
+        +viewAcademicPlan(Student) void
     }
 
-    class CreditLimitExceededException {
-        <<exception>>
-        + CreditLimitExceededException(msg String)
+    class CourseRepository {
+        -Map~String, Course~ courseMap
+        +addCourse(Course) void
+        +removeCourse(String) void
+        +getCourse(String) Course
+        +getAllCourses() List~Course~
     }
 
-    class PrerequisiteNotMetException {
-        <<exception>>
-        + PrerequisiteNotMetException(msg String)
+    class StudentRepository {
+        -Map~String, Student~ studentMap
+        +addStudent(Student) void
+        +getStudent(String) Student
+        +saveAll() void
+        +loadAll() void
     }
 
-    class CourseCapacityFullException {
-        <<exception>>
-        + CourseCapacityFullException(msg String)
-    }
+    %% Inheritance
+    User <|-- Student : extends
+    User <|-- Admin : extends
+    Course <|-- CoreCourse : extends
+    Course <|-- ElectiveCourse : extends
+    Course <|-- LabCourse : extends
 
-    class TimeTableConflictException {
-        <<exception>>
-        + TimeTableConflictException(msg String)
-    }
+    %% Association: Student has registered courses
+    Student "1" --> "0..*" Course : registeredCourses
 
-    User <|-- Student
-    User <|-- Admin
-    Course <|-- CoreCourse
-    Course <|-- ElectiveCourse
-    Course <|-- LabCourse
+    %% Dependency: RegistrationService uses Student and Course
+    RegistrationService ..> Student : «uses»
+    RegistrationService ..> Course : «uses»
 
-    Student "1" --> "0..*" Course : registers
-    CourseRepository "1" o-- "0..*" Course : stores
-    StudentRepository "1" --> "1" Student : manages
-
-    Admin ..> CourseRepository : uses
-    RegistrationService ..> Student : uses
-    RegistrationService ..> Course : uses
-    RegistrationService ..> CreditLimitExceededException : throws
-    RegistrationService ..> PrerequisiteNotMetException : throws
-    RegistrationService ..> CourseCapacityFullException : throws
-    RegistrationService ..> TimeTableConflictException : throws
+    %% Aggregation: Repositories manage entities
+    CourseRepository "1" o-- "0..*" Course : manages
+    StudentRepository "1" o-- "0..*" Student : manages
 ```
