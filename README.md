@@ -38,8 +38,8 @@ The Repository layer manages data persistence using file handling and object ser
 This seperation of concerns ensures modularity, maintainability, and scalability of the system. 
 
 ## How to Run
-1. Compile all Java files: javac -d out src/courseplanner/**/*.java
-2. Run the program: java -cp out courseplanner.ui.MainMenu
+1. Compile all Java files: javac courseplanner/ui/MainMenu.java
+2. Run the program: java courseplanner.ui.MainMenu
 3. Follow the console menu to:
    - View courses
    - Register courses
